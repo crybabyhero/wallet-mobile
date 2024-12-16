@@ -50,13 +50,6 @@ export default function App() {
     )
   }
 
-  function Intial() {
-    return (
-      <Stack.Navigator>
-        <Stack.Navigator initialRouteName='Login' />
-      </Stack.Navigator>
-    )
-  }
   function HomeStack() {
     return (
       <HomeTab.Navigator>
@@ -69,10 +62,9 @@ export default function App() {
 
   function root() {
     return (
-      <Stack.Navigator>
-        <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="Intial" component={Intial} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
         <Stack.Screen name='Transfer' component={Transfer} options={{ headerShown: false }} />

@@ -5,20 +5,20 @@ const ButtonTwo = ({ title }) => {
     const navigate = useNavigation();
     const handlePress = () => {
         Alert.alert(
-            "Konfirmasi", // Judul alert
-            "Apakah Anda yakin ingin kembali?", // Pesan alert
+            "Konfirmasi", 
+            "Apakah Anda yakin ingin kembali?",
             [
                 {
-                    text: "Batal", // Tombol batal
+                    text: "Batal", 
                     onPress: () => console.log("Batal ditekan"),
-                    style: "cancel", // Gaya tombol
+                    style: "cancel",
                 },
                 {
-                    text: "Ya", // Tombol konfirmasi
+                    text: "Ya",
                     onPress: () => navigate.goBack(),
                 },
             ],
-            { cancelable: true } // Membolehkan pengguna menutup alert di luar dialog
+            { cancelable: true }
         );
     };
     return (
