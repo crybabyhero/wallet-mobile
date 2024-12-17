@@ -8,6 +8,7 @@ import Transfer from './layout/transfer';
 import TopUp from './layout/topUp';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { AuthProvide, useAuth } from './context/authContext';
 
 
 export default function App() {
@@ -31,7 +32,7 @@ export default function App() {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
-        tabBarSyle={ 
+        tabBarSyle={
           {
             height: 70,
             backgroundColor: '#fff',
@@ -50,30 +51,28 @@ export default function App() {
     )
   }
 
-  function HomeStack() {
-    return (
-      <HomeTab.Navigator>
-        <HomeTab.Screen name="Home" component={Home} options={{ headerShown: false }} />
-        <HomeTab.Screen name="Transfer" component={Transfer} options={{ headerShown: false }} />
-        <HomeTab.Screen name="TopUp" component={TopUp} options={{ headerShown: false }} />
-      </HomeTab.Navigator>
-    );
-  }
 
   function root() {
     return (
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        {/* {auth ? ( */}
         <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="Home" component={HomeStack} options={{ headerShown: false }} />
+
+        {/* ) : ( */}
+        {/* <> */}
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-        <Stack.Screen name='Transfer' component={Transfer} options={{ headerShown: false }} />
+        {/* </> */}
+        {/* ) */}
+        {/* } */}
       </Stack.Navigator>
     );
   }
   return (
-    <NavigationContainer>
-      {root()}
-    </NavigationContainer>
+    <AuthProvide>
+      <NavigationContainer>
+        {root()}
+      </NavigationContainer>
+    </AuthProvide>
   );
 }

@@ -1,89 +1,115 @@
 import { View, Text, ScrollView, StyleSheet, Image, TouchableHighlight, TouchableOpacity } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListPengguna from '../componets/listPengguna';
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Transcation } from "../api/restApi";
 
 const Home = ({ navigation }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState({});
+
     const toggleEye = () => {
         setIsOpen(!isOpen);
     };
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
     };
+
+    useEffect(() => {
+        const getUser = async () => {
+            setIsLoading(true);
+            try {
+                const response = await Transcation();
+                setUser(response.data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+                console.log("user", user);
+            }
+        }
+        getUser();
+    }, []);
+
     return (
         <View style={styles.root}>
-            <View>
-                {/* ============== NAVBAR =============== */}
-                <View style={styles.appBar}>
-                    <View style={styles.profileContainer}>
-                        <Image source={require('../assets/profil.png')} style={styles.profileImage} />
-                        <View style={styles.appBarText}>
-                            <Text style={styles.profileName}>Chelsea Immanuela</Text>
-                            <Text style={styles.profileDesc}>Personal Account</Text>
-                        </View>
-                    </View>
-                    <TouchableOpacity onPress={toggleDarkMode}>
-                        {isDarkMode ? (
-                            <Icon name="sun-o" size={24} color="orange" style={styles.icon} />
-                        ) : (
-                            <Icon name="moon-o" size={24} color="black" style={styles.icon} />
-                        )}
-                    </TouchableOpacity>
-                </View>
-                {/* ============== CONTENT =============== */}
-                <View style={styles.textContent}>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.textContent1}>Good Morning, Chelsea</Text>
-                        <Text style={styles.textContent2}>Check all your incoming and outgoing transactions here</Text>
-                    </View>
-                    <Image source={require('../assets/mat.png')} style={styles.sun}></Image>
-                </View>
-                {/* ============== Account Information =============== */}
-                <View style={styles.cardAccount}>
-                    <View style={styles.textMain}>
-                        <Text style={styles.TextAccount}>Account No.</Text>
-                        <Text style={styles.textNumber}>21301303</Text>
-                    </View>
-                </View>
-                {/* ============== Transaction History =============== */}
-                <View style={styles.cardBalance}>
-                    <View style={styles.posBalance}>
-                        <View>
-                            <Text style={styles.textBalance}>Balance</Text>
-                            <View style={styles.balance}>
-                                <Text style={styles.textBalance1}>
-                                    {isOpen ? 'IDR 1.000.000.00' : '**********'}
-                                </Text>
-                                <TouchableOpacity onPress={toggleEye}>
-                                    {isOpen ? (
-                                        <Icon name="eye" size={24} style={styles.eye}></Icon>
-                                    ) : (
-                                        <Icon name="eye-slash" size={24} style={styles.eye}></Icon>
-                                    )}
-                                </TouchableOpacity>
+            {isLoading ? (
+                <Text>Loading...</Text>
+            ) : (
+                <View>
+                    {/* ============== NAVBAR =============== */}
+                    <View style={styles.appBar}>
+                        <View style={styles.profileContainer}>
+                            <Image source={require('../assets/profil.png')} style={styles.profileImage} />
+                            <View style={styles.appBarText}>
+                                <Text style={styles.profileName}>{user.full_name}</Text>
+                                <Text style={styles.profileDesc}>Personal Account</Text>
                             </View>
                         </View>
-                        <View style={styles.button}>
-                            <TouchableHighlight onPress={() => {
-                                navigation.navigate('TopUp')
-                            }}>
-                                <Icon name="plus" size={24} style={styles.plus}></Icon>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => {
-                                navigation.navigate('Transfer')
-                            }}>
-                                <Icon name="paper-plane" size={24} style={styles.paper} color="black"></Icon>
-                            </TouchableHighlight>
+                        <TouchableOpacity onPress={toggleDarkMode}>
+                            {isDarkMode ? (
+                                <Icon name="moon-o" size={24} color="black" style={styles.icon} />
+                            ) : (
+                                <Icon name="sun-o" size={24} color="orange" style={styles.icon} />
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                    {/* ============== CONTENT =============== */}
+                    <View style={styles.textContent}>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.textContent1}>Good Morning, {user.full_name}</Text>
+                            <Text style={styles.textContent2}>Check all your incoming and outgoing transactions here</Text>
+                        </View>
+                        <Image source={require('../assets/mat.png')} style={styles.sun}></Image>
+                    </View>
+                    {/* ============== Account Information =============== */}
+                    <View style={styles.cardAccount}>
+                        <View style={styles.textMain}>
+                            <Text style={styles.TextAccount}>Account No.</Text>
+                            <Text style={styles.textNumber}>{user.account_no}</Text>
                         </View>
                     </View>
-                </View>
-                <View style={styles.section}>
+                    {/* ============== Transaction History =============== */}
+                    <View style={styles.cardBalance}>
+                        <View style={styles.posBalance}>
+                            <View>
+                                <Text style={styles.textBalance}>Balance</Text>
+                                <View style={styles.balance}>
+                                    <Text style={styles.textBalance1}>
+                                        {isOpen ? user.balance : '**********'}
+                                    </Text>
+                                    <TouchableOpacity onPress={toggleEye}>
+                                        {isOpen ? (
+                                            <Icon name="eye" size={24} style={styles.eye}></Icon>
+                                        ) : (
+                                            <Icon name="eye-slash" size={24} style={styles.eye}></Icon>
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.button}>
+                                <TouchableHighlight onPress={() => {
+                                    navigation.navigate('TopUp')
+                                }}>
+                                    <Icon name="plus" size={24} style={styles.plus}></Icon>
+                                </TouchableHighlight>
+                                <TouchableHighlight onPress={() => {
+                                    navigation.navigate('Transfer')
+                                }}>
+                                    <Icon name="paper-plane" size={24} style={styles.paper} color="black"></Icon>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.section}>
 
-                    <ListPengguna />
+                        <ListPengguna />
+                    </View>
                 </View>
-            </View>
+            )}
         </View>
     );
 };
@@ -126,7 +152,7 @@ const styles = StyleSheet.create({
     profileName: {
         fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
+        textAlign: 'start',
     },
     profileDesc: {
         fontSize: 12,

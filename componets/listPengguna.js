@@ -1,22 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from 'react-native';
+import { fetchPosts, historyTranscation } from '../api/restApi';
+import { use, useEffect, useState } from 'react';
 
 const transactionData = [
-    { id: '1', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    { id: '2', name: 'Adityo Gizwanda', type: 'Topup', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    { id: '3', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    { id: '4', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    { id: '5', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    { id: '6', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    { id: '', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
+    // { id: '1', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
+    // { id: '2', name: 'Adityo Gizwanda', type: 'Topup', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
+    // { id: '3', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
+    // { id: '4', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
+    // { id: '5', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
+    // { id: '6', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
+    // { id: '', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
 ];
 
-// Komponen untuk baris transaksi dalam bentuk tabel
-const TransactionRow = ({ name, type, date, amount, isPositive }) => (
+const TransactionRow = ({ avatarUrl, name, type, date, amount, isPositive }) => (
     <View style={styles.row}>
         <Image
             style={styles.profileImage}
-            source={{ uri: 'https://via.placeholder.com/40' }}
+            source={{ uri: avatarUrl }}
         />
         <View style={styles.detailsContainer}>
             <Text style={styles.name}>{name}</Text>
@@ -30,26 +30,56 @@ const TransactionRow = ({ name, type, date, amount, isPositive }) => (
 );
 
 const ListPengguna = () => {
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const getTransactions = async () => {
+            try {
+                const data = await historyTranscation();
+                setTransactions(data.data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        getTransactions();
+        console.log(transactions);
+    }, []);
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+    }
+
+    if (error) {
+        return (
+            <View>
+                <Text>Error: {error}</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.card}>
             <Text style={styles.header}>Transaction History</Text>
-
             <View style={styles.table}>
-                    <FlatList
-                        style={ { height: 300 } }
-                        data={transactionData}
-                        key={transactionData.id}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <TransactionRow
-                                name={item.name}
-                                type={item.type}
-                                date={item.date}
-                                amount={item.amount}
-                                isPositive={item.isPositive}
-                            />
-                        )}
-                    />
+                <FlatList
+                    style={{ height: 300 }}
+                    data={transactions}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TransactionRow
+                            avatarUrl={item.avatar || 'https://via.placeholder.com/40'}
+                            name={ item.user_id}
+                            type={item.type}
+                            date={item.created_at}
+                            amount={item.amount}
+                            isPositive={item.isPositive || false}
+                        />
+                    )}
+                />
             </View>
         </View>
     );
@@ -81,8 +111,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f0f0f0',
     },
     profileImage: {
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         borderRadius: 20,
         marginRight: 10,
     },

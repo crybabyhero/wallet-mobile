@@ -7,7 +7,7 @@ const AppBar = ({ title }) => {
     const navigate = useNavigation();
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => { navigate.goBack() }} style={styles.iconContainer}>
+            <TouchableOpacity onPress={() => { navigate.goBack(); }} style={styles.iconContainer}>
                 <Icon name="chevron-left" size={20} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
