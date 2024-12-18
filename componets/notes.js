@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
-const Notes = () => {
-    const [notes, setNotes] = useState('');
-
+const Notes = ({notes, setNotes}) => {
     return (
         <View style={styles.card}>
             <Text style={styles.label}>Notes</Text>

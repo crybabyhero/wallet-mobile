@@ -30,7 +30,6 @@ const Form = ({ state }) => {
         try {
             // AsyncStorage.setItem('userFullName', user.full_name);
             const response = await login(email, password);
-            console.log(response);
             setLoginState(response.data.token);
             alert('Login successful');
             navigation.navigate('TabNavigator');

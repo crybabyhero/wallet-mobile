@@ -1,9 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Transcation } from "../api/restApi";
 
-const Amount = ({balance, nominal}) => {
-    const [amount, setAmount] = useState('10000');
-
+const Amount = ({ amount, onAmountChange }) => {
+    const [user, setUser] = useState({});
+    useEffect(() => {
+        const getUser = async () => {
+            setIsLoading(true);
+            try {
+                const response = await Transcation();
+                setUser(response.data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+                console.log("user", user);
+            }
+        }
+        getUser();
+        console.log(user);
+    }, []);
     return (
         <View style={styles.card}>
             <Text style={styles.label}>Amount</Text>
@@ -13,14 +29,14 @@ const Amount = ({balance, nominal}) => {
                     style={styles.input}
                     keyboardType="numeric"
                     value={amount}
-                    onChangeText={setAmount}
+                    onChangeText={onAmountChange}
                     placeholder="Enter amount"
                     placeholderTextColor="#888"
                 />
             </View>
             <View style={styles.position}>
-                <Text style={styles.balance}>{balance}</Text>
-                <Text style={styles.nominal}>{nominal}</Text>
+                <Text style={styles.balance}>balance</Text>
+                <Text style={styles.nominal}>{user.balance}</Text>
             </View>
         </View>
     );
@@ -66,7 +82,6 @@ const styles = StyleSheet.create({
         paddingTop: 10
     },
     balance: {
-        fontWeight: 'regular',
         fontSize: 14,
         color: '#555',
     },

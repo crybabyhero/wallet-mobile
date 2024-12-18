@@ -1,59 +1,13 @@
 import React, { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-const ButtonTwo = ({ title }) => {
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
-
-    const handlePress = () => {
-        setTimeout(() => {
-            setSuccessModalVisible(true);
-        }, 1000);
-    };
+const ButtonTwo = ({ title, onPress }) => {
 
     return (
         <View style={styles.container}>
-            <Pressable style={styles.button} onPress={() => {
-                setModalVisible(true);
-                handlePress();
-            }}>
+            <Pressable style={styles.button} onPress={onPress}>
                 <Text style={styles.text}>{title}</Text>
             </Pressable>
-
-            <Modal
-                transparent={true}
-                visible={isSuccessModalVisible}
-                animationType="fade"
-                onRequestClose={() => setSuccessModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.successModalContent}>
-                        <View style={styles.successIconContainer}>
-                            <Text style={styles.successIcon}>✔️</Text>
-                        </View>
-                        <Text style={styles.successTitle}>{title}</Text>
-                        <Text style={styles.successText}>Amount: 1.000.000</Text>
-                        <Text style={styles.successText}>Transaction Id: 338818239039011</Text>
-                        <Text style={styles.successText}>From: 11234001000</Text>
-                        <Text style={styles.successText}>To: 1234005001</Text>
-                        <Text style={styles.successText}>Description: Bayar hutang dan beli Bakso</Text>
-
-                        <View style={styles.modalButtonContainer}>
-                            <Pressable
-                                style={[styles.modalButton, styles.printButton]}
-                            >
-                                <Text style={styles.buttonText}>Print</Text>
-                            </Pressable>
-                            <Pressable
-                                style={[styles.modalButton, styles.closeButton]}
-                                onPress={() => setSuccessModalVisible(false)}
-                            >
-                                <Text style={styles.buttonText}>Close</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
         </View>
     );
 };
