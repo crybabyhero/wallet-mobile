@@ -2,15 +2,7 @@ import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from 'reac
 import { fetchPosts, historyTranscation } from '../api/restApi';
 import { use, useEffect, useState } from 'react';
 
-const transactionData = [
-    // { id: '1', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    // { id: '2', name: 'Adityo Gizwanda', type: 'Topup', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    // { id: '3', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    // { id: '4', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    // { id: '5', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-    // { id: '6', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '+ 75.000,00', isPositive: true },
-    // { id: '', name: 'Adityo Gizwanda', type: 'Transfer', date: '08 December 2024', amount: '- 75.000,00', isPositive: false },
-];
+
 
 const TransactionRow = ({ avatarUrl, name, type, date, amount, isPositive }) => (
     <View style={styles.row}>

@@ -86,7 +86,6 @@ export const postTranscation = async (type, from_to, amount, description) => {
     const token = await AsyncStorage.getItem("userToken");
     try {
         const response = await api.post("transactions", {
-
             type,
             from_to,
             amount,

@@ -4,22 +4,23 @@ import { Transcation } from "../api/restApi";
 
 const Amount = ({ amount, onAmountChange }) => {
     const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(false); // Tambahkan state untuk isLoading
+
     useEffect(() => {
         const getUser = async () => {
             setIsLoading(true);
             try {
                 const response = await Transcation();
-                setUser(response.data);
+                setUser(response.data); // Pastikan response data memiliki field `balance`
             } catch (error) {
                 console.log(error);
             } finally {
                 setIsLoading(false);
-                console.log("user", user);
             }
-        }
+        };
         getUser();
-        console.log(user);
     }, []);
+
     return (
         <View style={styles.card}>
             <Text style={styles.label}>Amount</Text>
@@ -35,8 +36,10 @@ const Amount = ({ amount, onAmountChange }) => {
                 />
             </View>
             <View style={styles.position}>
-                <Text style={styles.balance}>balance</Text>
-                <Text style={styles.nominal}>{user.balance}</Text>
+                <Text style={styles.balance}>Balance:</Text>
+                <Text style={styles.nominal}>
+                    {isLoading ? "Loading..." : user?.balance || "0"}
+                </Text>
             </View>
         </View>
     );
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     position: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 10
+        paddingTop: 10,
     },
     balance: {
         fontSize: 14,
